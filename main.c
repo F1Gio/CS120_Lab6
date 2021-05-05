@@ -1,3 +1,35 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@F1Gio 
+F1Gio
+/
+CS120_Lab6
+1
+00
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Add files via upload
+
+ main
+@F1Gio
+F1Gio committed 17 seconds ago 
+0 parents commit 064c40886c9c2885a4755701026be7469cc875af
+Showing  with 187 additions and 0 deletions.
+ 187  main.c 
+@@ -0,0 +1,187 @@
 /*	Author: Giovany Turrubiartes
  *  Partner(s) Name: 
  *	Lab Section: 022
@@ -48,25 +80,11 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
+static unsigned char led = 0x00;
+static unsigned char button = 0x00;
 
-enum SM1_States {SM1_Start, SM1_PB0, SM1_PB1, SM1_PB2, SM1_PB11, SM1_PB00, SM1_Wait} SM1_State;
-
-
-int main(void) {
-	DDRB = 0xFF;
-	PORTB = 0x00;
-	TimerSet(300);
-	TimerOn();
-	unsigned char led = 0x00;
-	unsigned char button = 0x00;
-    /* Insert DDR and PORT initializations */
-
-    /* Insert your solution below */
-    while (1) {
-
-	button = ~PINA & 0x01;
-
-	switch(SM1_State) {
+void buttonStop() {
+switch(SM1_State) {
 		case SM1_Start:
 			if (button) {
 				SM1_State = SM1_Start;
@@ -174,14 +192,52 @@ int main(void) {
 			break;
 
 		}
-	
-	
-	    PORTB = led;
-//	    while (!TimerFlag);
-//	    TimerFlag = 0;
-	    
-    
+
+}
+
+enum SM1_States {SM1_Start, SM1_PB0, SM1_PB1, SM1_PB2, SM1_PB11, SM1_PB00, SM1_Wait} SM1_State;
+
+
+int main(void) {
+	DDRB = 0xFF;
+	PORTB = 0x00;
+	TimerSet(300);
+	TimerOn();
+//	unsigned char led = 0x00;
+//	unsigned char button = 0x00;
+    /* Insert DDR and PORT initializations */
+
+    /* Insert your solution below */
+    while (1) {
+
+	button = ~PINA & 0x01;
+	buttonStop();
+	PORTB = led;
+	while (!TimerFlag);
+	TimerFlag = 0;
+
+
 
     }
-  
+
 }
+0 comments on commit 064c408
+@F1Gio
+ 
+ 
+Leave a comment
+No file chosen
+Attach files by dragging & dropping, selecting or pasting them.
+ You’re receiving notifications because you’re watching this repository.
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
