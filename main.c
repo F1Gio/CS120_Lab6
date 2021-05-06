@@ -1,7 +1,7 @@
 /*	Author: Giovany Turrubiartes
  *  Partner(s) Name: 
  *	Lab Section: 022
- *	Assignment: Lab #6  Exercise #2
+ *	Assignment: Lab #6  Exercise #1
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -48,144 +48,35 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
-static unsigned char led = 0x00;
-static unsigned char button = 0x00;
-enum SM1_States {SM1_Start, SM1_PB0, SM1_PB1, SM1_PB2, SM1_PB11, SM1_PB00, SM1_Wait} SM1_State;
-
-void buttonStop() {
-switch(SM1_State) {
-		case SM1_Start:
-			SM1_State = SM1_PB0;
-			break;
-
-		case SM1_PB0:
-			if (button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else{
-				SM1_State = SM1_PB1;
-			}
-
-			break;
-
-		case SM1_PB1:
-			if (button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else{
-				SM1_State = SM1_PB2;
-			}
-
-			break;
-
-		case SM1_PB2:
-			if (button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else{
-				SM1_State = SM1_PB11;
-			}
-
-			break;
-
-		case SM1_PB11:
-			if (button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else{
-				SM1_State = SM1_PB00;
-			}
-
-			break;
-
-		case SM1_PB00:
-			if (button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else{
-				SM1_State = SM1_PB0;
-			}
-
-			break;
-
-		case SM1_Wait:
-			if (!button) {
-				SM1_State = SM1_Wait;
-			}
-
-			else if (button){
-				SM1_State = SM1_Start;
-			}
-
-			break;
-	}
-
-	switch (SM1_State) {
-		case (SM1_Start):
-			led = (led & 0xF8) | 0x00;
-			PORTB = led;
-			break;
-
-		case (SM1_PB0):
-			led = (led & 0xF8) | 0x01;
-			PORTB = led;
-			break;
-
-		case (SM1_PB1):
-			led = (led & 0xF8) | 0x02;
-			PORTB = led;
-			break;
-
-		case (SM1_PB2): 
-			led = (led & 0xF8) | 0x04;
-			PORTB = led;
-			break;
-
-		case (SM1_PB11):
-			led = (led & 0xF8) | 0x02;
-			PORTB = led;
-			break;
-
-		case (SM1_PB00):
-			led = (led & 0xF8) | 0x01;
-			PORTB = led;
-			break;
-
-		case (SM1_Wait):
-			break;
-
-		}
-
-}
-
 
 int main(void) {
-	DDRA = 0x00;
-	PORTA = 0xFF;
 	DDRB = 0xFF;
 	PORTB = 0x00;
-	TimerSet(300);
+	TimerSet(1000);
 	TimerOn();
-//	unsigned char led = 0x00;
-//	unsigned char button = 0x00;
+	unsigned char led = 0x00;
     /* Insert DDR and PORT initializations */
 
     /* Insert your solution below */
     while (1) {
+	    
+	    led = (led & 0xF8) | 0x01;
+	    PORTB = led;
+	    while (!TimerFlag);
+	     TimerFlag = 0;
 
-	button = ~PINA & 0x01;
-	buttonStop();
-//	PORTB = led;
-	while (!TimerFlag);
-	TimerFlag = 0;
+	    led = (led & 0xF8) | 0x02;
+	    PORTB = led;
+	    while (!TimerFlag);
+	    TimerFlag = 0;
 
-
+	    led = (led & 0xF8) | 0x04;
+	    PORTB = led;
+	    while (!TimerFlag);
+	    TimerFlag = 0;
+	    
+    
 
     }
-
+  
 }
