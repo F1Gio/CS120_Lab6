@@ -1,7 +1,7 @@
 /*	Author: Giovany Turrubiartes
  *  Partner(s) Name: 
  *	Lab Section: 022
- *	Assignment: Lab #6  Exercise #1
+ *	Assignment: Lab #6  Exercise #2
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -48,35 +48,117 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
+static unsigned char led = 0x00;
+static unsigned char buttonInc = 0x00;
+static unsigned char buttonDec = 0x00;
+static unsigned char Tot = 0x00;
+enum SM1_States {SM1_Start, SM1_Inc, SM1_Dec} SM1_State;
+
+void IncDec() {
+switch(SM1_State) {
+		case SM1_Start:
+
+			if (buttonInc) {
+				SM1_State = SM1_Inc;
+			}
+
+			else if (buttonDec) {
+				SM1_State = SM1_Dec;
+			}
+
+			else {
+				SM1_State = SM1_Start;
+			}
+			break;
+
+		case SM1_Inc:
+			if (buttonInc) {
+				SM1_State = SM1_Inc;
+			}
+
+			else if (buttonDec){
+				SM1_State = SM1_Dec;
+			}
+
+			else if (buttonInc && buttonDec) {
+				SM1_State = SM1_Start;
+			}
+
+			break;
+
+		case SM1_Dec:
+			if (buttonDec) {
+				SM1_State = SM1_Dec;
+			}
+
+			else if (buttonInc){
+				SM1_State = SM1_Inc;
+			}
+
+			else if (buttonInc && buttonDec) {
+				SM1_State = SM1_Start;
+			}
+
+			break;
+
+			
+	}
+
+	switch (SM1_State) {
+		case (SM1_Start):
+			Tot = 0;
+			led = (led & 0xF8) | 0x00;
+			PORTB = led;
+			break;
+
+		case (SM1_Inc):
+
+			if (Tot < 9) {
+				Tot = Tot + 1;
+				led = (led & 0xF0) | Tot;
+				PORTB = led;
+			}
+
+			break;
+
+		case (SM1_Dec):
+
+			if (Tot > 0) {
+				Tot = Tot - 1;
+				led = (led & 0xF0) | Tot;
+				PORTB = led;
+			}
+			break;
+	}
+		
+		
+
+}
+
 
 int main(void) {
+	DDRA = 0x00;
+	PORTA = 0xFF;
 	DDRB = 0xFF;
 	PORTB = 0x00;
-	TimerSet(1000);
+	TimerSet(100);
 	TimerOn();
-	unsigned char led = 0x00;
+//	unsigned char led = 0x00;
+//	unsigned char button = 0x00;
     /* Insert DDR and PORT initializations */
 
     /* Insert your solution below */
     while (1) {
-	    
-	    led = (led & 0xF8) | 0x01;
-	    PORTB = led;
-	    while (!TimerFlag);
-	     TimerFlag = 0;
 
-	    led = (led & 0xF8) | 0x02;
-	    PORTB = led;
-	    while (!TimerFlag);
-	    TimerFlag = 0;
+	buttonInc = ~PINA & 0x01;
+	buttonDec = ~PINA & 0x02;
+	IncDec();
+//	PORTB = led;
+	while (!TimerFlag);
+	TimerFlag = 0;
 
-	    led = (led & 0xF8) | 0x04;
-	    PORTB = led;
-	    while (!TimerFlag);
-	    TimerFlag = 0;
-	    
-    
+
 
     }
-  
+
 }
